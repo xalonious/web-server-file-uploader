@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>File Uploader</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      height: 100vh;
+      background: linear-gradient(45deg, #1f1c2c, #928dab);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      color: #fff;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.05), transparent 50%);
+      animation: rotate 20s linear infinite;
+      z-index: 0;
+    }
+    @keyframes rotate {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    .upload-container {
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 40px;
+      text-align: center;
+      width: 450px;
+      animation: fadeInScale 0.8s ease-out forwards;
+      transform: scale(0.9);
+    }
+    @keyframes fadeInScale {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    .upload-container h1 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+    input[type="file"] {
+      display: none;
+    }
+    label[for="fileInput"] {
+      display: inline-block;
+      padding: 12px 24px;
+      background: linear-gradient(45deg, #ff416c, #ff4b2b);
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-bottom: 20px;
+    }
+    label[for="fileInput"]:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255, 75, 43, 0.8);
+    }
+    button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 24px;
+      background: linear-gradient(45deg, #00d2ff, #3a7bd5);
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(0, 210, 255, 0.8);
+    }
+    .progress-bar-container {
+      margin-top: 30px;
+      width: 100%;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(45deg, #00d2ff, #3a7bd5);
+      transition: width 0.2s ease;
+    }
+    .message {
+      margin-top: 20px;
+      font-size: 18px;
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+    }
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+    #fileNames {
+      margin-top: 20px;
+      text-align: left;
+      max-height: 150px;
+      overflow-y: auto;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+    #fileNames ul {
+      list-style: none;
+    }
+    #fileNames li {
+      margin: 5px 0;
+      padding: 5px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 14px;
+    }
+    #fileNames li:last-child {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="upload-container">
+    <h1>File uploader</h1>
+    <label for="fileInput">Choose Files</label>
+    <input type="file" id="fileInput" multiple />
+    <div id="fileNames"></div>
+    <button id="uploadButton">Upload Files</button>
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="message" id="message"></div>
+  </div>
+  <script>
+    document.getElementById('fileInput').addEventListener('change', () => {
+      const fileNamesDiv = document.getElementById('fileNames');
+      fileNamesDiv.innerHTML = '';
+      const files = document.getElementById('fileInput').files;
+      if (files.length > 0) {
+        const ul = document.createElement('ul');
+        for (const file of files) {
+          const li = document.createElement('li');
+          li.textContent = file.name;
+          ul.appendChild(li);
+        }
+        fileNamesDiv.appendChild(ul);
+      }
+    });
+    document.getElementById('uploadButton').addEventListener('click', () => {
+      const files = document.getElementById('fileInput').files;
+      const progressBar = document.getElementById('progressBar');
+      const messageDiv = document.getElementById('message');
+      if (files.length === 0) {
+        messageDiv.textContent = 'Please select files to upload.';
+        return;
+      }
+      progressBar.style.width = '0%';
+      messageDiv.textContent = 'Uploading...';
+      const formData = new FormData();
+      for (const file of files) {
+        formData.append('files', file);
+      }
+      const authToken = new URLSearchParams(window.location.search).get('auth_token') || '';
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/upload?auth_token=' + encodeURIComponent(authToken));
+      xhr.upload.addEventListener('progress', (event) => {
+        if (event.lengthComputable) {
+          const percentComplete = (event.loaded / event.total) * 100;
+          progressBar.style.width = percentComplete + '%';
+        }
+      });
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          messageDiv.textContent = 'Upload successful!';
+          progressBar.style.width = '100%';
+        } else {
+          messageDiv.textContent = 'Error uploading files.';
+          progressBar.style.width = '0%';
+        }
+      };
+      xhr.onerror = () => {
+        messageDiv.textContent = 'Error uploading files.';
+        progressBar.style.width = '0%';
+      };
+      xhr.send(formData);
+    });
+  </script>
+</body>
+</html>
+
