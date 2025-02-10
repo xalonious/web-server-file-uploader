@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>File Uploader</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -11,34 +12,31 @@
       box-sizing: border-box;
     }
     body {
-      font-family: 'Roboto', sans-serif;
-      height: 100vh;
-      background: linear-gradient(45deg, #1f1c2c, #928dab);
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #74ABE2, #5563DE);
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      position: relative;
       color: #fff;
+      position: relative;
     }
     body::before {
-      content: '';
+      content: "";
       position: absolute;
       top: -50%;
       left: -50%;
       width: 200%;
       height: 200%;
-      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.05), transparent 50%);
-      animation: rotate 20s linear infinite;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: pulse 25s ease infinite;
       z-index: 0;
     }
-    @keyframes rotate {
-      from {
-        transform: rotate(0deg);
-      }
-      to {
-        transform: rotate(360deg);
-      }
+    @keyframes pulse {
+      0% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+      50% { transform: translate(50px, 50px) scale(1.1); opacity: 0.4; }
+      100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
     }
     .upload-container {
       position: relative;
@@ -46,59 +44,61 @@
       background: rgba(255, 255, 255, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 20px;
-      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       padding: 40px;
-      text-align: center;
       width: 450px;
-      animation: fadeInScale 0.8s ease-out forwards;
-      transform: scale(0.9);
+      max-width: 90%;
+      text-align: center;
+      animation: fadeIn 1s ease-out;
     }
-    @keyframes fadeInScale {
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .upload-container h1 {
-      font-size: 32px;
-      margin-bottom: 20px;
+      font-size: 36px;
+      margin-bottom: 25px;
       letter-spacing: 1px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
     }
     input[type="file"] {
       display: none;
     }
     label[for="fileInput"] {
       display: inline-block;
-      padding: 12px 24px;
-      background: linear-gradient(45deg, #ff416c, #ff4b2b);
+      padding: 15px 30px;
+      background: linear-gradient(45deg, #FF416C, #FF4B2B);
       border-radius: 30px;
       cursor: pointer;
-      font-weight: bold;
-      transition: transform 0.2s, box-shadow 0.2s;
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+      transition: transform 0.3s, box-shadow 0.3s;
       margin-bottom: 20px;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
     label[for="fileInput"]:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 15px rgba(255, 75, 43, 0.8);
+      box-shadow: 0 0 15px rgba(255, 65, 108, 0.7);
     }
     button {
-      display: inline-block;
       margin-top: 20px;
-      padding: 12px 24px;
-      background: linear-gradient(45deg, #00d2ff, #3a7bd5);
+      padding: 15px 30px;
+      background: linear-gradient(45deg, #00D2FF, #3A7BD5);
       border: none;
       border-radius: 30px;
       cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
+      font-size: 18px;
+      font-weight: 600;
       color: #fff;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: transform 0.3s, box-shadow 0.3s;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
     button:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 15px rgba(0, 210, 255, 0.8);
+      box-shadow: 0 0 15px rgba(0, 210, 255, 0.7);
     }
     .progress-bar-container {
       margin-top: 30px;
@@ -107,51 +107,56 @@
       background: rgba(255, 255, 255, 0.2);
       border-radius: 6px;
       overflow: hidden;
-      position: relative;
     }
     .progress-bar {
       height: 100%;
       width: 0;
-      background: linear-gradient(45deg, #00d2ff, #3a7bd5);
-      transition: width 0.2s ease;
+      background: linear-gradient(45deg, #00D2FF, #3A7BD5);
+      transition: width 0.4s ease;
     }
     .message {
       margin-top: 20px;
       font-size: 18px;
-      opacity: 0;
-      animation: fadeIn 0.5s forwards;
-    }
-    @keyframes fadeIn {
-      to {
-        opacity: 1;
-      }
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
     #fileNames {
       margin-top: 20px;
       text-align: left;
       max-height: 150px;
       overflow-y: auto;
-      padding: 10px;
-      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.2);
       border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      font-size: 16px;
     }
     #fileNames ul {
       list-style: none;
     }
     #fileNames li {
-      margin: 5px 0;
-      padding: 5px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-      font-size: 14px;
+      margin: 8px 0;
+      padding: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     }
     #fileNames li:last-child {
       border-bottom: none;
+    }
+    #fileNames::-webkit-scrollbar {
+      width: 8px;
+    }
+    #fileNames::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+    #fileNames::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 10px;
     }
   </style>
 </head>
 <body>
   <div class="upload-container">
-    <h1>File uploader</h1>
+    <h1>File Uploader</h1>
     <label for="fileInput">Choose Files</label>
     <input type="file" id="fileInput" multiple />
     <div id="fileNames"></div>
@@ -176,6 +181,7 @@
         fileNamesDiv.appendChild(ul);
       }
     });
+
     document.getElementById('uploadButton').addEventListener('click', () => {
       const files = document.getElementById('fileInput').files;
       const progressBar = document.getElementById('progressBar');
@@ -217,4 +223,3 @@
   </script>
 </body>
 </html>
-
