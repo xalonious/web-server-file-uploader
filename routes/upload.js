@@ -30,7 +30,7 @@ const upload = multer({
 router.use((req, res, next) => {
     const apiKey = req.query.auth_token;
     if (apiKey !== process.env.API_KEY) {
-        return res.status(403).json({ error: 'Forbidden: Invalid or missing auth token' });
+        return res.status(401).json({ message: 'Unauthorized' });
     }
     next();
 });
