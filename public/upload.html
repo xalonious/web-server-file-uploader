@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Stunning File Uploader</title>
+  <title>File Uploader</title>
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
   <style>
-    /* Reset & Global Styles */
     * {
       margin: 0;
       padding: 0;
@@ -24,7 +23,6 @@
       overflow: hidden;
       color: #fff;
     }
-    /* Animated Background Overlay */
     body::before {
       content: "";
       position: absolute;
@@ -42,7 +40,6 @@
       100% { transform: scale(1) rotate(360deg); }
     }
     
-    /* Main Container */
     .container {
       position: relative;
       z-index: 1;
@@ -63,7 +60,6 @@
       position: relative;
     }
     
-    /* Drag & Drop Zone */
     .dropzone {
       margin: 1rem 0;
       padding: 2rem;
@@ -83,7 +79,6 @@
       display: none;
     }
     
-    /* File List */
     .file-list {
       margin-top: 1rem;
       text-align: left;
@@ -104,7 +99,6 @@
       border-bottom: none;
     }
     
-    /* Upload Button */
     .upload-btn {
       margin-top: 1.5rem;
       padding: 0.8rem 2rem;
@@ -123,7 +117,6 @@
       box-shadow: 0 0 15px rgba(255, 65, 108, 0.8);
     }
     
-    /* Progress Bar */
     .progress {
       margin-top: 1rem;
       width: 100%;
@@ -139,7 +132,6 @@
       transition: width 0.4s ease;
     }
     
-    /* Status Message */
     .message {
       margin-top: 1rem;
       font-size: 1rem;
@@ -171,7 +163,6 @@
     const progressBar = document.getElementById('progressBar');
     const messageEl = document.getElementById('message');
 
-    // Update the file list display
     function updateFileList() {
       fileList.innerHTML = '';
       const files = fileInput.files;
@@ -189,7 +180,6 @@
     }
     fileInput.addEventListener('change', updateFileList);
 
-    // Drag & Drop functionality
     dropzone.addEventListener('dragover', (e) => {
       e.preventDefault();
       dropzone.style.background = 'rgba(255,255,255,0.1)';
@@ -202,15 +192,12 @@
       e.preventDefault();
       dropzone.style.background = 'transparent';
       
-      // Use DataTransfer to merge dropped files with already selected files
       const dt = new DataTransfer();
-      // Add already selected files
       if (fileInput.files && fileInput.files.length > 0) {
         for (let i = 0; i < fileInput.files.length; i++) {
           dt.items.add(fileInput.files[i]);
         }
       }
-      // Add files from the drop event
       if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
         for (let i = 0; i < e.dataTransfer.files.length; i++) {
           dt.items.add(e.dataTransfer.files[i]);
@@ -220,7 +207,6 @@
       updateFileList();
     });
 
-    // Upload logic
     uploadBtn.addEventListener('click', () => {
       const files = fileInput.files;
       if (!files || files.length === 0) {
